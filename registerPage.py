@@ -3,13 +3,54 @@ from PyQt4 import QtCore, QtGui
 import mysql.connector
 
 
-class RegisterPage(QtGui.QMainWindow):
+cnx = mysql.connector.connect(user='root', password='johnmaf23',host='127.0.0.1',database='draughtsDatabase')
+cursor=cnx.cursor()
+
+class registerPageUI(QtGui.QMainWindow):
     def __init__(self):
-        super(RegisterPage, self).__init__()
+        super(registerPageUI, self).__init__()
         self.setupUi()
 
         self.setGeometry(0,0,640,480)
         self.setWindowTitle("Register")
+
+    def register(self,usernameInput,createEmailInput,createPasswordInput,confirmPasswordInput):
+                email=createEmailInput.text()
+                username=usernameInput.text()
+                password=createPasswordInput.text()
+                checkPassword=confirmPasswordInput.text()
+                if password=="" or email=="" or username=="":
+                    msg = QtGui.QMessageBox.information(self, 'Message', 'Please fill in all boxes', QtGui.QMessageBox.Ok)
+                elif password==checkPassword:
+                        if len(password)>=7:
+                            for i in range(len(email)-1):
+                                if email[i]=="@":
+                                    add_user = ("INSERT INTO draughtsUsers ""(username, password, email) ""VALUES (%s, %s, %s)")
+
+                                    userData=(username,password,email)
+                                    cursor.execute(add_user, userData)
+                                    userId= cursor.lastrowid
+                                    cnx.commit()
+                                    cursor.close()
+                                    cnx.close()
+
+                            msg = QtGui.QMessageBox.information(self, 'Message', 'Invalid email entered', QtGui.QMessageBox.Ok)
+
+                        else:
+                            msg = QtGui.QMessageBox.information(self, 'Message', 'Password is not long enough. Must be 7 characters long', QtGui.QMessageBox.Ok)
+
+
+
+
+                else:
+                    msg = QtGui.QMessageBox.information(self, 'Message', 'Inputted passwords are not the same', QtGui.QMessageBox.Ok)
+
+
+
+
+
+    def goHome(self):
+            import homePage2
 
     def setupUi(self):
 
@@ -30,9 +71,7 @@ class RegisterPage(QtGui.QMainWindow):
         HomePageLink.setObjectName("HomePageLink")
         HomePageLink.setText("Home")
 
-        def goHome(self):
-            self.homePage_ui=homePage
-            self.homePage_ui.show()
+
 
         #this part of the code is to let the users know they need to enter a username
         enterUsernameLbl = QtGui.QLabel(self)
@@ -95,29 +134,7 @@ class RegisterPage(QtGui.QMainWindow):
         registerButton.setGeometry(QtCore.QRect(260, 350, 110, 30))
         registerButton.setObjectName("registerButton")
         registerButton.setText("Register")
-
-
-        def register():
-            if createPasswordInput.text()==confirmPasswordInput.text():
-                password=confirmPasswordInput.text()
-            else:
-                msg = QtGui.QMessageBox.information(self, 'Message', 'Inputted passwords are not the same', QtGui.QMessageBox.Ok)
-            email=createEmailInput.text()
-            username=usernameInput.text()
-            if password=="" or email=="" or username=="":
-                msg = QtGui.QMessageBox.information(self, 'Message', 'please fill in all boxes', QtGui.QMessageBox.Ok)
-            else:
-                cnx = mysql.connector.connect(user='scott', password='password',host='127.0.0.1',database='employees')
-                add_user = ("INSERT INTO draughtsUsers "
-               "(username, passsword, email) "
-               "VALUES (%s, %s, %s)")
-                cursor=cnx.cursor()
-                userData=(username,password,email)
-                cursor.execute(add_user, userData)
-                userId= cursor.lastrowid
-                cnx.commit()
-                cursor.close()
-                cnx.close()
+        registerButton.clicked.connect(lambda: self.register(usernameInput,createEmailInput,createPasswordInput,confirmPasswordInput))
 
 
         #this button will take the user back to the login page if they already have an account
@@ -136,7 +153,7 @@ class RegisterPage(QtGui.QMainWindow):
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    window = RegisterPage()
+    window = registerPageUI()
     window.show()
     sys.exit(app.exec_())
 

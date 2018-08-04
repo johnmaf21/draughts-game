@@ -1,9 +1,9 @@
 import sys
 from PyQt4 import QtCore, QtGui
 
-class player1SetupPage(QtGui.QMainWindow):
+class player1SetupPageUI(QtGui.QMainWindow):
     def __init__(self):
-        super(player1SetupPage,self).__init__()
+        super(player1SetupPageUI,self).__init__()
         self.setupUi()
 
         self.setGeometry(0,0,640,480)
@@ -71,12 +71,14 @@ class player1SetupPage(QtGui.QMainWindow):
         playNowButton.setObjectName("playNowButton")
         playNowButton.setText("Next")
 
+        playNowButton.clicked.connect( openInstructions())
+
         player1NameInput.setText("Player 1")
 
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    window = player1SetupPage()
+    window = player1SetupPageUI()
     window.show()
     sys.exit(app.exec_())
 

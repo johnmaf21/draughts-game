@@ -1,14 +1,24 @@
 import sys
 from PyQt4 import QtCore, QtGui
 
-
-class loginPage(QtGui.QMainWindow):
+userID=0
+class loginPageUI(QtGui.QMainWindow):
     def __init__(self):
-        super(loginPage, self).__init__()
+        super(loginPageUI, self).__init__()
         self.setupUi()
 
         self.setGeometry(0,0,640,480)
         self.setWindowTitle("Login")
+
+    def openHomePage(self):
+        import homepage1
+
+    def login(self,emailInput,passwordInput):
+        email=emailInput.text()
+        password=passwordInput()
+        userLoginQuery= "SELECT email FROM draughtsuser WHERE where email=%s"
+
+
 
     def setupUi(self):
         Pg3titleLbl = QtGui.QLabel(self)
@@ -26,6 +36,8 @@ class loginPage(QtGui.QMainWindow):
         HomeButton.setObjectName("HomeButton")
         HomeButton.setText("Home")
 
+        HomeButton.clicked.connect(lambda: self.openHomePage())
+
         loginButton = QtGui.QPushButton(self)
         loginButton.setGeometry(QtCore.QRect(270, 320, 100, 30))
         font = QtGui.QFont()
@@ -33,6 +45,8 @@ class loginPage(QtGui.QMainWindow):
         loginButton.setFont(font)
         loginButton.setObjectName("loginButton")
         loginButton.setText("login")
+
+        login.clicked.connect(self.login(emailInput,passwordInput))
 
         emailLbl = QtGui.QLabel(self)
         emailLbl.setGeometry(QtCore.QRect(160, 170, 60, 40))
@@ -62,12 +76,12 @@ class loginPage(QtGui.QMainWindow):
         registerPageLink.setGeometry(QtCore.QRect(390, 410, 240, 30))
         registerPageLink.setStyleSheet("QPushButton {border: 0px;} QPushButton:hover {color:rgb(0,0,225);}")
         registerPageLink.setObjectName("registerPageLink")
-        registerPageLink.setText("If you don’t have an account, register here")
+        registerPageLink.setText("If you don't have an account, register here")
 
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    window = loginPage()
+    window = loginPageUI()
     window.show()
     sys.exit(app.exec_())
 
